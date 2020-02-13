@@ -132,16 +132,17 @@ namespace de4dot_gui
             //Add files to arguments
             string[] files = lbFilesToDeobfuscate.Items.OfType<string>().ToArray();
             if (files.Length == 0)
+            {
                 MessageBox.Show("Please choose valid files for deobfuscation!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             foreach (string file in files)
                 arguments += file + " ";
 
             //Force obfuscator Detection
             if (cbForceObf.Checked)
-            {
-                string obfname = Enum.GetName(typeof(obfuscatorTypes), comboObfuscators.SelectedIndex);
-                arguments += "-p " + obfname + " ";
-            }
+                arguments += "-p " + Enum.GetName(typeof(obfuscatorTypes), comboObfuscators.SelectedIndex) + " ";
 
             //Dont rename
             if (cbNoRenaming.Checked)
@@ -161,7 +162,11 @@ namespace de4dot_gui
                 //todo implement regex check to automaticly determine if a token or path is used
                 string[] methods = lbDecryptionMethods.Items.OfType<string>().ToArray();
                 if (methods.Length == 0)
-                    MessageBox.Show("Please enter valid string decryption functions!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                {
+                    MessageBox.Show("Please enter valid string decryption functions!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                    return;
+                }
+
                 foreach (string method in methods)
                     arguments += "--strtok " + method + " ";
             }
