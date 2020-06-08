@@ -9,7 +9,6 @@ namespace de4dot_gui
     {
         private int index;
         private int index_;
-        private string arguments;
 
         public Form1()
         {
@@ -44,7 +43,7 @@ namespace de4dot_gui
                 if (file.EndsWith(".exe") || file.EndsWith(".dll"))
                     lbFilesToDeobfuscate.Items.Add(file);
                 else
-                    MessageBox.Show("Invalid file format, use .dll or .exe files", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(@"Invalid file format, use .dll or .exe files", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         #endregion "Drag&Drop Events"
@@ -124,16 +123,17 @@ namespace de4dot_gui
         private void comboDeobfMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboDeobfMethod.SelectedIndex == 1)
-                MessageBox.Show("Using emulation will execute code, do not use this feature on unknown or pontentially malicious code!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(@"Using emulation will execute code, do not use this feature on unknown or pontentially malicious code!", @"Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
+        private string arguments;
         private void btnDeobfuscate_Click_1(object sender, EventArgs e)
         {
             //Add files to arguments
-            string[] files = lbFilesToDeobfuscate.Items.OfType<string>().ToArray();
+            var files = lbFilesToDeobfuscate.Items.OfType<string>().ToArray();
             if (files.Length == 0)
             {
-                MessageBox.Show("Please choose valid files for deobfuscation!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(@"Please choose valid files for deobfuscation!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -152,18 +152,18 @@ namespace de4dot_gui
             if (cbEnableAdvStrings.Checked)
             {
                 if (comboDeobfMethod.SelectedIndex == -1)
-                    MessageBox.Show("Choose a method for string decryption!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(@"Choose a method for string decryption!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 if (comboDeobfMethod.SelectedIndex == 0)
                     arguments += "--strtyp delegate ";
                 else
                     arguments += "--strtyp emulate ";
 
-                //todo implement regex check to automaticly determine if a token or path is used
-                string[] methods = lbDecryptionMethods.Items.OfType<string>().ToArray();
+                //Todo implement regex check to automaticly determine if a token or path is used
+                var methods = lbDecryptionMethods.Items.OfType<string>().ToArray();
                 if (methods.Length == 0)
                 {
-                    MessageBox.Show("Please enter valid string decryption functions!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                    MessageBox.Show(@"Please enter valid string decryption functions!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
                     return;
                 }
 
@@ -171,12 +171,7 @@ namespace de4dot_gui
                     arguments += "--strtok " + method + " ";
             }
 
-            if (cbUse64Bit.Checked)
-                Process.Start(tbDeobfPath64.Text, arguments);
-            else
-                Process.Start(tbDeobfPath.Text, arguments);
-
-            //MessageBox.Show(arguments);
+            Process.Start( cbUse64Bit.Checked ? tbDeobfPath64.Text : tbDeobfPath.Text, arguments );
         }
 
         private void cbEnableAdvStrings_CheckedChanged(object sender, EventArgs e)
